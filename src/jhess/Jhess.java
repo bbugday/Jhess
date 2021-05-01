@@ -45,13 +45,17 @@ public class Jhess {
 
     public ArrayList<Integer> findReachableSquares(int squareCode){
         ArrayList<Integer> reachableSquares = new ArrayList<Integer>();
-        Square square = squares[squareCode];
-        Piece pieceOnSquare = square.getCurrentPiece();
-        //add other piece types
-        if(pieceOnSquare.pieceType() == PieceType.ROOK){
-            reachableSquares = findRookMoves(squareCode, pieceOnSquare.getColor());
-        }
+        Piece pieceOnSquare = findPieceWithSquareCode(squareCode);
+        reachableSquares = pieceOnSquare.findReachableSquares(squareCode, squares);
         return reachableSquares;
+    }
+
+    public Piece findPieceWithSquareCode(int squareCode){
+        return findSquareWithSquareCode(squareCode).getCurrentPiece();
+    }
+
+    public Square findSquareWithSquareCode(int squareCode){
+        return squares[squareCode];
     }
 
     public ArrayList<Integer> attacking(int squareCode, Color attackingColor){
@@ -97,84 +101,6 @@ public class Jhess {
         }
         //create exception instead
         return -1;
-    }
-
-    ///Very long function! split it as horizontalcontrolright and left functions
-    public ArrayList<Integer> horizontalControl(int sourceSquareCode, Color pieceColor){
-        ArrayList<Integer> legalSquares = new ArrayList<Integer>();
-
-        for(int i = 1; i < 8; i++){
-            int destinationSquareCode = sourceSquareCode + i;
-            Square destinationSquare = squares[destinationSquareCode];
-            if(!isSquareWithinBoard(destinationSquareCode))
-                break;
-            if(destinationSquare.getCurrentPiece() != null){
-                if(destinationSquare.getCurrentPiece().getColor() == pieceColor){
-                    break;
-                }
-                legalSquares.add(destinationSquareCode);
-                break;
-            }
-            legalSquares.add(destinationSquareCode);
-        }
-        for(int i = 1; i < 8; i++){
-            int destinationSquareCode = sourceSquareCode - i;
-            Square destinationSquare = squares[destinationSquareCode];
-            if(!isSquareWithinBoard(destinationSquareCode))
-                break;
-            if(destinationSquare.getCurrentPiece() != null){
-                if(destinationSquare.getCurrentPiece().getColor() == pieceColor){
-                    break;
-                }
-                legalSquares.add(destinationSquareCode);
-                break;
-            }
-            legalSquares.add(destinationSquareCode);
-        }
-        return legalSquares;
-    }
-
-    //Very long function! split it as verticalcontrolup and down functions
-    public ArrayList<Integer> verticalControl(int sourceSquareCode, Color pieceColor){
-        ArrayList<Integer> legalSquares = new ArrayList<Integer>();
-        int destinationSquareCode;
-
-        for(int i = 0x10; i < 0x80; i = i + 0x10){
-            destinationSquareCode = sourceSquareCode + i;
-            if(!isSquareWithinBoard(destinationSquareCode))
-                break;
-            Square destinationSquare = squares[destinationSquareCode];
-            if(destinationSquare.getCurrentPiece() != null){
-                if(destinationSquare.getCurrentPiece().getColor() == pieceColor){
-                    break;
-                }
-                legalSquares.add(destinationSquareCode);
-                break;
-            }
-            legalSquares.add(destinationSquareCode);
-        }
-        for(int i = 0x10; i < 0x80; i = i + 0x10){
-            destinationSquareCode = sourceSquareCode - i;
-            if(!isSquareWithinBoard(destinationSquareCode))
-                break;
-            Square destinationSquare = squares[destinationSquareCode];
-            if(destinationSquare.getCurrentPiece() != null){
-                if(destinationSquare.getCurrentPiece().getColor() == pieceColor){
-                    break;
-                }
-                legalSquares.add(destinationSquareCode);
-                break;
-            }
-            legalSquares.add(destinationSquareCode);
-        }
-        return legalSquares;
-    }
-
-    public ArrayList<Integer> findRookMoves(int sourceSquareCode, Color pieceColor){
-        ArrayList<Integer> legalSquares = new ArrayList<Integer>();
-        legalSquares.addAll(horizontalControl(sourceSquareCode, pieceColor));
-        legalSquares.addAll(verticalControl(sourceSquareCode, pieceColor));
-        return legalSquares;
     }
 
     public String ascii(){
