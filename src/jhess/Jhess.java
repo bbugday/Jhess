@@ -10,7 +10,8 @@ import java.util.ArrayList;
 public class Jhess {
     private Square[] squares = new Square[0x80];
     private Color turn = Color.WHITE;
-
+    private Move move;
+    
     public Jhess(){
         for(int i = 0; i < 0x80; i++){
             this.squares[i] = new Square(i);
@@ -19,6 +20,8 @@ public class Jhess {
         this.squares[53].setCurrentPiece(new Rook(Color.BLACK, squares));
         this.squares[54].setCurrentPiece(new Rook(Color.WHITE, squares));
         this.squares[55].setCurrentPiece(new King(Color.WHITE, squares));
+
+        move = new Move(squares);
     }
 
     public boolean isSquareWithinBoard(int squareCode){
@@ -26,7 +29,6 @@ public class Jhess {
     }
 
     public ArrayList<Integer> findLegalMoves(int sourceSquareCode) {
-        Move move = new Move(squares);
         return move.findLegalMoves(sourceSquareCode);
     }
 
