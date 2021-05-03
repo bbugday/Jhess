@@ -16,91 +16,27 @@ public class Jhess {
             this.squares[i] = new Square(i);
         }
         //These are for testing purposes. Make a real initial board later.
-        this.squares[53].setCurrentPiece(new Rook(Color.BLACK));
-        this.squares[54].setCurrentPiece(new Rook(Color.WHITE));
-        this.squares[55].setCurrentPiece(new King(Color.WHITE));
+        this.squares[53].setCurrentPiece(new Rook(Color.BLACK, squares));
+        this.squares[54].setCurrentPiece(new Rook(Color.WHITE, squares));
+        this.squares[55].setCurrentPiece(new King(Color.WHITE, squares));
     }
 
     public boolean isSquareWithinBoard(int squareCode){
         return (squareCode & 0x88) == 0;
     }
 
+    public ArrayList<Integer> findLegalMoves(int sourceSquareCode) {
+        Move move = new Move(squares);
+        return move.findLegalMoves(sourceSquareCode);
+    }
+
     public void move(int sourceSquareCode, int destinationSquareCode){
-        Piece piece = squares[sourceSquareCode].getCurrentPiece();
+        Piece piece = findPieceWithSquareCode(sourceSquareCode);
         if(piece.getColor() != turn){
             throw new InvalidParameterException("It's " + turn.name() + "'s turn.");
         }
-        if(findLegalMoves(sourceSquareCode).contains(destinationSquareCode)){
-            squares[sourceSquareCode].setCurrentPiece(null);
-            squares[destinationSquareCode].setCurrentPiece(piece);
-        }
-    }
-
-    public ArrayList<Integer> findLegalMoves(int sourceSquareCode) {
-        ArrayList<Integer> legalSquares = new ArrayList<Integer>();
-        legalSquares = findReachableSquares(sourceSquareCode);
-        legalSquares.removeIf(squareCode -> isCheckAfterMove(sourceSquareCode, squareCode));
-        return legalSquares;
-    }
-
-    public ArrayList<Integer> findReachableSquares(int squareCode){
-        ArrayList<Integer> reachableSquares = new ArrayList<Integer>();
-        Piece pieceOnSquare = findPieceWithSquareCode(squareCode);
-        reachableSquares = pieceOnSquare.findReachableSquares(squareCode, squares);
-        return reachableSquares;
-    }
-
-    public Piece findPieceWithSquareCode(int squareCode){
-        return findSquareWithSquareCode(squareCode).getCurrentPiece();
-    }
-
-    public Square findSquareWithSquareCode(int squareCode){
-        return squares[squareCode];
-    }
-
-    public ArrayList<Integer> attacking(int squareCode, Color attackingColor){
-        ArrayList<Integer> attackingSquares = new ArrayList<Integer>();
-        for(int i = 0; i < 0x80; i++){
-            if(squares[i].getCurrentPiece() != null && squares[i].getCurrentPiece().getColor() == attackingColor){
-                if(findReachableSquares(i).contains(squareCode)){
-                    attackingSquares.add(i);
-                }
-            }
-        }
-        return attackingSquares;
-    }
-
-    public boolean isCheckAfterMove(int sourceSquareCode, int destinationSquareCode){
-        Square sourceSquare = squares[sourceSquareCode];
-        Square destinationSquare = squares[destinationSquareCode];
-        Piece temp = destinationSquare.getCurrentPiece();
-
-        destinationSquare.setCurrentPiece(sourceSquare.getCurrentPiece());
-        sourceSquare.setCurrentPiece(null);
-
-        boolean check = isCheck(destinationSquare.getCurrentPiece().getColor());
-
-        sourceSquare.setCurrentPiece(destinationSquare.getCurrentPiece());
-        destinationSquare.setCurrentPiece(temp);
-
-        return check;
-    }
-
-    public boolean isCheck(Color kingColor){
-        Color attackingColor = kingColor == Color.WHITE ? Color.BLACK : Color.WHITE;
-        int kingPositionCode = findKingPosition(kingColor);
-        return !attacking(kingPositionCode, attackingColor).isEmpty();
-    }
-
-    public int findKingPosition(Color kingColor){
-        for(int i = 0; i < 0x80; i++){
-            Piece piece = squares[i].getCurrentPiece();
-            if(piece != null && piece.pieceType() == PieceType.KING && piece.getColor() == kingColor){
-                return i;
-            }
-        }
-        //create exception instead
-        return -1;
+        Move move = new Move(squares);
+        move.makeMove(sourceSquareCode, destinationSquareCode);
     }
 
     public String ascii(){
@@ -124,6 +60,14 @@ public class Jhess {
                         squares[4].toString()   + "  " + squares[5].toString()   + "  " + squares[6].toString()   + "  " + squares[7].toString()   + " |\n" +
                         "+------------------------+\n" +
                         "    a  b  c  d  e  f  g  h";
+    }
+
+    private Piece findPieceWithSquareCode(int squareCode){
+        return findSquareWithSquareCode(squareCode).getCurrentPiece();
+    }
+
+    private Square findSquareWithSquareCode(int squareCode){
+        return squares[squareCode];
     }
 
 }

@@ -7,25 +7,32 @@ import jhess.Square;
 import java.util.ArrayList;
 
 public abstract class Piece {
+
+    Piece(Color color, Square[] squares){
+        this.color = color;
+        this.squares = squares;
+    }
+
+    protected Square[] squares;
+
+    protected Color color;
+
     public Color getColor() {
         return color;
     }
+
     public abstract String toString();
-    Color color;
-    Piece(Color color){
-        this.color = color;
-    }
+
     public abstract PieceType pieceType();
 
-    public abstract ArrayList<Integer> findReachableSquares(int sourceSquareCode, Square[] squares);
-
+    public abstract ArrayList<Integer> findReachableSquares(int sourceSquareCode);
 
     public boolean isSquareWithinBoard(int squareCode){
         return (squareCode & 0x88) == 0;
     }
 
     ///Very long function! split it as horizontalcontrolright and left functions
-    public ArrayList<Integer> horizontalControl(int sourceSquareCode, Square[] squares){
+    public ArrayList<Integer> horizontalControl(int sourceSquareCode){
         ArrayList<Integer> legalSquares = new ArrayList<Integer>();
         for(int i = 1; i < 8; i++){
             int destinationSquareCode = sourceSquareCode + i;
@@ -59,7 +66,7 @@ public abstract class Piece {
     }
 
     //Very long function! split it as verticalcontrolup and down functions
-    public ArrayList<Integer> verticalControl(int sourceSquareCode, Square[] squares){
+    public ArrayList<Integer> verticalControl(int sourceSquareCode){
         ArrayList<Integer> legalSquares = new ArrayList<Integer>();
         int destinationSquareCode;
 

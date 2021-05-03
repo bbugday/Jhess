@@ -10,11 +10,11 @@ public class King extends Piece {
 
     @Override
     public String toString() {
-        return this.color == color.WHITE ? "K" : "k";
+        return this.color == Color.WHITE ? "K" : "k";
     }
 
-    public King(Color color){
-        super(color);
+    public King(Color color, Square[] squares){
+        super(color, squares);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class King extends Piece {
         return PieceType.KING;
     }
 
-    public ArrayList<Integer> findReachableSquares(int sourceSquareCode, Square[] squares){
+    public ArrayList<Integer> findReachableSquares(int sourceSquareCode){
         return null;
     }
 }

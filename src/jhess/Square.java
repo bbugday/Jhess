@@ -29,7 +29,7 @@ public class Square {
         return this.currentPiece == null ? "." : this.currentPiece.toString();
     }
 
-    public ArrayList<Integer> findReachableSquares(int sourceSquareCode, Square[] squares){
-        return currentPiece.findReachableSquares(sourceSquareCode, squares);
+    public ArrayList<Integer> findReachableSquares(int sourceSquareCode){
+        return currentPiece.findReachableSquares(sourceSquareCode);
     }
 }
