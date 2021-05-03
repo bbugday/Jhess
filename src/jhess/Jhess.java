@@ -1,27 +1,19 @@
 package jhess;
 
-import jhess.Pieces.King;
 import jhess.Pieces.Piece;
-import jhess.Pieces.Rook;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 public class Jhess {
-    private Square[] squares = new Square[0x80];
+
+    private Board board;
     private Color turn = Color.WHITE;
     private Move move;
-    
-    public Jhess(){
-        for(int i = 0; i < 0x80; i++){
-            this.squares[i] = new Square(i);
-        }
-        //These are for testing purposes. Make a real initial board later.
-        this.squares[53].setCurrentPiece(new Rook(Color.BLACK, squares));
-        this.squares[54].setCurrentPiece(new Rook(Color.WHITE, squares));
-        this.squares[55].setCurrentPiece(new King(Color.WHITE, squares));
 
-        move = new Move(squares);
+    public Jhess(){
+        board = new Board();
+        move = new Move(board.squares);
     }
 
     public boolean isSquareWithinBoard(int squareCode){
@@ -37,11 +29,11 @@ public class Jhess {
         if(piece.getColor() != turn){
             throw new InvalidParameterException("It's " + turn.name() + "'s turn.");
         }
-        Move move = new Move(squares);
+        Move move = new Move(board.squares);
         move.makeMove(sourceSquareCode, destinationSquareCode);
     }
 
-    public String ascii(){
+    /*public String ascii(){
         return
                 "  +------------------------+\n" +
                         "8 | " + squares[112].toString() + "  " + squares[113].toString() + "  " + squares[114].toString() + "  " + squares[115].toString() + "  "   +
@@ -62,14 +54,14 @@ public class Jhess {
                         squares[4].toString()   + "  " + squares[5].toString()   + "  " + squares[6].toString()   + "  " + squares[7].toString()   + " |\n" +
                         "+------------------------+\n" +
                         "    a  b  c  d  e  f  g  h";
-    }
+    }*/
 
     private Piece findPieceWithSquareCode(int squareCode){
         return findSquareWithSquareCode(squareCode).getCurrentPiece();
     }
 
     private Square findSquareWithSquareCode(int squareCode){
-        return squares[squareCode];
+        return board.squares[squareCode];
     }
 
 }
