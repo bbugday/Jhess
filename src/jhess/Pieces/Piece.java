@@ -8,14 +8,14 @@ import java.util.ArrayList;
 
 public abstract class Piece {
 
+    protected Square[] squares;
+
+    protected Color color;
+
     Piece(Color color, Square[] squares){
         this.color = color;
         this.squares = squares;
     }
-
-    protected Square[] squares;
-
-    protected Color color;
 
     public Color getColor() {
         return color;

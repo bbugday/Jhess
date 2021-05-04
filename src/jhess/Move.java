@@ -2,22 +2,30 @@ package jhess;
 
 import jhess.Pieces.Piece;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 public class Move {
 
     private Square[] squares;
+    private GameLogic gameLogic;
 
     public Move(Square[] squares){
         this.squares = squares;
+        gameLogic = new GameLogic();
     }
 
     public void makeMove(int sourceSquareCode, int destinationSquareCode){
         Piece piece = findPieceWithSquareCode(sourceSquareCode);
+        Color movingPieceColor = piece.getColor();
+        if(!gameLogic.isItThisColorsTurn(movingPieceColor)){
+            throw new InvalidParameterException("It's " + gameLogic.getTurn().name() + "'s turn.");
+        }
         if(findLegalMoves(sourceSquareCode).contains(destinationSquareCode)){
             squares[sourceSquareCode].setCurrentPiece(null);
             squares[destinationSquareCode].setCurrentPiece(piece);
         }
+        gameLogic.switchTurn();
     }
 
     public ArrayList<Integer> findLegalMoves(int sourceSquareCode) {
